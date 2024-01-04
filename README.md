@@ -34,3 +34,5 @@ For detailed step-by-step instructions, refer to the provided documentation with
 - Ensure that Python, SQLAlchemy, Pandas, and Matplotlib are installed to execute the analysis.
 - Review the provided notebook for comprehensive guidance on conducting the climate analysis.
 - Modify the Flask API routes as needed to suit specific data retrieval requirements.
+
+🌴☀️
