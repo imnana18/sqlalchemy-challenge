@@ -65,6 +65,7 @@ def precipitation():
     # Calculate the date one year ago
     query_date = most_recent_date_dt - timedelta(days=365)
 
+    # Run query for last 12 months prcp data from query date.
     last_12_months_precipitation = session.query(
         Measurement.station, 
         Measurement.date, 
@@ -73,10 +74,11 @@ def precipitation():
         filter(Measurement.date >= query_date).\
         order_by(Measurement.date.desc()).all()
 
-    # Perform a query to retrieve the data and precipitation scores
+    # Perform a query to retrieve only the date and precipitation scores
     last_12_months_prcp = session.query(Measurement.date, Measurement.prcp).\
         filter(Measurement.date >= query_date).all()
     
+    # Create dictionary to store prcp data for last 12 months with date as the key.
     last_12_months_dict = dict()
 
     for row in last_12_months_prcp:
@@ -87,6 +89,7 @@ def precipitation():
     return jsonify(last_12_months_dict)
 
 @app.route("/api/v1.0/stations")
+# Perform a query to find total stations in database
 def stations():
     active_stations = session.query(
         Measurement.station,
@@ -94,6 +97,7 @@ def stations():
         Measurement.station
     ).all()
 
+# Create list of stations with their respective data from database
     station_list = list()
 
     for station in active_stations:
@@ -102,6 +106,8 @@ def stations():
     return jsonify(station_list) 
 
 @app.route("/api/v1.0/tobs")
+# Perform query to count the number of data entry (rows) for each station to show the most active stations
+# in descending order (most to least active)
 def tobs():
     active_stations = session.query(
         Measurement.station,
@@ -112,9 +118,11 @@ def tobs():
         func.count().desc()
     ).all()
 
+# Print station activity results
     for station, count in active_stations:
         print(f"Station: {station}, Row Count: {count}")
 
+# Print the most active station from the database (station with most data output)
     most_active_id = None
     if active_stations:
         most_active_station = active_stations[0] 
@@ -124,7 +132,8 @@ def tobs():
         print(f"Most Active Station: {station}, Row Count: {count}")
     else:
         print("No data found")
-    
+
+# Find temperature statistics for the most active station    
     temp_stats = session.query(
         func.min(Measurement.tobs),
         func.max(Measurement.tobs),
@@ -145,7 +154,7 @@ def tobs():
 
     return jsonify([lowest_temp, highest_temp, avg_temp]) 
 
-
+# URL for specified start date only (no end date)
 @app.route("/api/v1.0/<start>")
 def start(start):
     '''
@@ -154,7 +163,7 @@ def start(start):
 
     return jsonify(get_temp_data(start)) 
 
-
+# URL for specified timeframe (start and end dates)
 @app.route("/api/v1.0/<start>/<end>")
 def start_end(start, end):
     '''
@@ -162,7 +171,7 @@ def start_end(start, end):
     '''
     return jsonify(get_temp_data(start,end)) 
 
-
+# URL for test interface for user inputs 
 @app.route("/api/v1.0/start_end",methods=['GET', 'POST'])
 def input_date():
     if request.method == 'POST':
@@ -199,6 +208,7 @@ def input_date():
         </html>
     '''
 
+# Get corresponding temperature data for user input date(s) with start date and (optional) end date.
 def get_temp_data(start, end=None):
 
     print("Start:",start," End:",end)
