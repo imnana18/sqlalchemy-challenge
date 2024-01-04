@@ -18,6 +18,7 @@ Upon completion of the initial analysis, a Flask API is designed based on the de
 - `/api/v1.0/stations`: Returns a JSON list of stations available in the dataset.
 - `/api/v1.0/tobs`: Returns a JSON list of temperature observations for the previous year from the most-active station.
 - `/api/v1.0/<start>` and `/api/v1.0/<start>/<end>`: Returns a JSON list of minimum, average, and maximum temperatures for a specified start date or start-end range.
+- `/api/v1.0/start_end`: Interactive user interface that returns a list of temperature observations for a specific start and (optional) end date of interest.
 
 ## Instructions for Use
 To utilize this project:
